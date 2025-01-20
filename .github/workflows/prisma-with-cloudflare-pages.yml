@@ -1,4 +1,4 @@
-name: ERD Build
+name: prisma-with-cloudflare-pages
 on:
   push:
   schedule:
@@ -6,7 +6,7 @@ on:
     - cron: "0 0,4 * * mon-fri"
 
 jobs:
-  build-erd:
+  build-and-deploy-erd:
     runs-on: ubuntu-latest
     defaults:
       run:
