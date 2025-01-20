@@ -1,6 +1,5 @@
 name: prisma-with-cloudflare-pages
 on:
-  push:
   schedule:
     # Schedule: Runs at 9:00 AM and 1:00 PM JST on weekdays (Monday to Friday).
     - cron: "0 0,4 * * mon-fri"
