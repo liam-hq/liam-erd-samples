@@ -1,0 +1,29 @@
+name: prisma-with-cloudflare-pages
+on:
+  schedule:
+    # Schedule: Runs at 9:00 AM and 1:00 PM Asia/Tokyo time (UTC+9) on weekdays (Monday to Friday).
+    - cron: "0 0,4 * * mon-fri"
+
+jobs:
+  build-and-deploy-erd:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: samples/prisma-with-cloudflare-pages
+
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate ER Diagrams
+        run: npx @liam-hq/cli erd build --input prisma/schema.prisma --format prisma
+      - name: Deploy ERD to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_SAMPLE_PRISMA }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_SAMPLE_PRISMA }}
+          workingDirectory: samples/prisma-with-cloudflare-pages
+          command: pages deploy ./dist --project-name=prisma-with-cloudflare-pages
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
