@@ -1,24 +1,13 @@
-# README
+# Rails 8.0 with `db/structure.sql`
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This project is a development example using Rails 8.0, utilizing `db/structure.sql` instead of `db/schema.rb`.
 
-Things you may want to cover:
+In this demo, a GitHub Actions workflow generates `db/schema.rb`, which is then used as input for the Liam CLI.
 
-* Ruby version
+## Workflow
 
-* System dependencies
+The deployment process is automated using a GitHub Actions workflow defined in [.github/workflows/rails-8-0-db-structure.yml](/.github/workflows/rails-8-0-db-structure.yml).
 
-* Configuration
+## Documentation
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+For more detailed information, please refer to the [Liam documentation's Rails support page](https://liambx.com/docs/parser/supported-formats/rails).
