@@ -8,6 +8,9 @@ Bundler.require(*Rails.groups)
 
 module Rails80DbStructure
   class Application < Rails::Application
+    # For demo, set active_record.schema_format = :sql
+    config.active_record.schema_format = :sql
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 
