@@ -5,14 +5,15 @@ class CreateInitials < ActiveRecord::Migration[8.0]
     SQL
 
     create_table :users do |t|
-      t.string :email, null: false, unique: true
+      t.string :email, null: false
       t.string :username, null: false
       t.string :password, null: false
       t.timestamps
+      t.index :email, unique: true
     end
 
     create_table :profiles do |t|
-      t.references :user, null: false, foreign_key: true, unique: true
+      t.references :user, null: false, foreign_key: true
       t.string :first_name, null: false
       t.string :last_name, null: false
       t.text :bio
@@ -20,6 +21,7 @@ class CreateInitials < ActiveRecord::Migration[8.0]
       t.date :birth_date
       t.string :phone_number
       t.timestamps
+      # t.index :user_id, unique: true
     end
 
     create_table :posts do |t|
@@ -38,8 +40,9 @@ class CreateInitials < ActiveRecord::Migration[8.0]
     end
 
     create_table :tags do |t|
-      t.string :name, null: false, unique: true
+      t.string :name, null: false
       t.timestamps
+      t.index :name, unique: true
     end
 
     create_table :post_tags, id: false do |t|
@@ -49,8 +52,9 @@ class CreateInitials < ActiveRecord::Migration[8.0]
     end
 
     create_table :categories do |t|
-      t.string :name, null: false, unique: true
+      t.string :name, null: false
       t.timestamps
+      t.index :name, unique: true
     end
 
     create_table :products do |t|
