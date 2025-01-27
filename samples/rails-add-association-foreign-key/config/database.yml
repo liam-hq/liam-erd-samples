@@ -1,0 +1,32 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: postgres
+  password: password
+  host: localhost
+  port: 5432
+development:
+  <<: *default
+  database: rails_add_association_foreign_key_development
+test:
+  <<: *default
+  database: rails_add_association_foreign_key_test
+production:
+  primary: &primary_production
+    <<: *default
+    database: rails_add_association_foreign_key_production
+    username: rails_add_association_foreign_key
+    password: <%= ENV["RAILS_ADD_ASSOCIATION_FOREIGN_KEY_DATABASE_PASSWORD"] %>
+  cache:
+    <<: *primary_production
+    database: rails_add_association_foreign_key_production_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_production
+    database: rails_add_association_foreign_key_production_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_production
+    database: rails_add_association_foreign_key_production_cable
+    migrations_paths: db/cable_migrate
