@@ -1,0 +1,68 @@
+name: rails-add-association-foreign-key
+on:
+  schedule:
+    # Schedule: Runs at 9:00 AM and 1:00 PM Asia/Tokyo time (UTC+9) on weekdays (Monday to Friday).
+    - cron: "0 0,4 * * mon-fri"
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy-erd:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: samples/rails-add-association-foreign-key
+
+    permissions:
+      contents: read
+      deployments: write
+
+    # NOTE: for db tasks.
+    services:
+      postgres:
+        image: postgres:17.2
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        env:
+          POSTGRES_PASSWORD: password
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # NOTE: for `bin/rails` command.
+      - name: Setup Ruby for samples/rails-add-association-foreign-key
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          working-directory: samples/rails-add-association-foreign-key
+
+      - name: Apply migration
+        run: bin/rails db:create db:migrate
+
+      # appends `add_foreign_key` statements to `db/schema.rb`
+      # based on `belongs_to` associations defined in Active Record models.
+      # see also lib/tasks/append_foreign_key_to_db_schema_rb.rake.
+      - name: Add foreign_key to `db/schema.rb`
+        run: bin/rails append_foreign_key_to_db_schema_rb
+
+      # For check
+      - name: cat db/schema.rb
+        run: cat db/schema.rb
+
+      - name: Generate ER Diagrams
+        run: npx @liam-hq/cli erd build --input db/schema.rb --format schemarb
+
+      # For check
+      - name: ls -alF dist
+        run: ls -alF dist
+
+      # NOTE: For deploy, comment-in.
+      # see also other .github/workflows/ files.
+      # - name: Deploy ERD to Cloudflare Pages
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_SAMPLE_PRISMA }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_SAMPLE_PRISMA }}
+      #     workingDirectory: samples/prisma-with-cloudflare-pages
+      #     command: pages deploy ./dist --project-name=prisma-with-cloudflare-pages
+      #     gitHubToken: ${{ secrets.GITHUB_TOKEN }}
