@@ -1,24 +1,19 @@
-# README
+# Generating Foreign Keys for Rails ER Diagrams
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This project is a development example using Rails.
 
-Things you may want to cover:
+In this demo, a GitHub Actions workflow appends `add_foreign_key` statements to `db/schema.rb` based on associations defined in Active Record models.
 
-* Ruby version
+This allows relationships to be rendered in the ER diagram even in projects where no foreign keys are explicitly set in the database.
 
-* System dependencies
+## Workflow
 
-* Configuration
+The deployment process is automated using a GitHub Actions workflow defined in [.github/workflows/rails-add-association-foreign-key.yml](/.github/workflows/rails-add-association-foreign-key.yml).
 
-* Database creation
+The workflow executes a Rake task. In particular, please take note of the following file:
 
-* Database initialization
+- `lib/tasks/append_foreign_key_to_db_schema_rb.rake`
 
-* How to run the test suite
+## Documentation
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+For more detailed information, please refer to the [Liam documentation's Rails support page](https://liambx.com/docs/parser/supported-formats/rails).
