@@ -17,6 +17,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_DATABASE: blog_app
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
         ports:
           - 3306:3306
         options: >-
