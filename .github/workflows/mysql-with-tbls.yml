@@ -1,0 +1,54 @@
+name: MySQL with tbls
+
+on:
+  pull_request:
+    paths:
+      - "samples/mysql-with-tbls/**"
+      - ".github/workflows/mysql-with-tbls.yml"
+  schedule:
+    # Schedule: Runs at 9:00 AM and 1:00 PM Asia/Tokyo time (UTC+9) on weekdays (Monday to Friday).
+    - cron: "0 0,4 * * mon-fri"
+
+jobs:
+  document:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: blog_app
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup tbls
+        uses: k1low/setup-tbls@v1
+
+      - name: Migrate schema
+        run: |
+          mysql -h127.0.0.1 -uroot blog_app < samples/mysql-with-tbls/schema.sql
+
+      - name: Generate tbls document
+        run: |
+          tbls doc --force --config samples/mysql-with-tbls/.tbls.yml
+
+      - name: Generate ER Diagrams
+        run: npx @liam-hq/cli erd build --format tbls --input samples/mysql-with-tbls/docs/schema.json
+
+      # NOTE: For deploy, comment-in.
+      # see also other .github/workflows/ files.
+      # - name: Deploy ERD to Cloudflare Pages
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_SAMPLE_PRISMA }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_SAMPLE_PRISMA }}
+      #     workingDirectory: samples/prisma-with-cloudflare-pages
+      #     command: pages deploy ./dist --project-name=prisma-with-cloudflare-pages
+      #     gitHubToken: ${{ secrets.GITHUB_TOKEN }}
