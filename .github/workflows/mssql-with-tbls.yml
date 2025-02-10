@@ -14,14 +14,17 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mssql:
+        # Note: By setting ACCEPT_EULA=Y, you acknowledge and accept the EULA for Microsoft SQL Server
+        # See: https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-configure-environment-variables
         image: mcr.microsoft.com/mssql/server:2022-latest
         env:
           ACCEPT_EULA: Y
-          SA_PASSWORD: YOUR_STRONG_PASSWORD
+          # Password must meet SQL Server complexity requirements
+          SA_PASSWORD: ${{ secrets.MSSQL_SA_PASSWORD }}
         ports:
           - 1433:1433
         options: >-
-          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YOUR_STRONG_PASSWORD -Q 'SELECT 1' || exit 0"
+          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${{ secrets.MSSQL_SA_PASSWORD }} -Q 'SELECT 1' || exit 0"
           --memory=4096m
           --memory-swap=6144m
           --health-interval=20s
@@ -45,7 +48,7 @@ jobs:
 
       - name: Migrate schema
         run: |
-          /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YOUR_STRONG_PASSWORD -i samples/mssql-with-tbls/schema.sql -C
+          /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${{ secrets.MSSQL_SA_PASSWORD }} -i samples/mssql-with-tbls/schema.sql -C
 
       - name: Generate tbls document
         run: |
