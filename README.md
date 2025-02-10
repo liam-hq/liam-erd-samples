@@ -10,3 +10,7 @@ This repository contains sample projects demonstrating how to set up Liam ERD us
 - [Rails Foreign Key Associations](samples/rails-add-association-foreign-key/README.md)
 
 For more details on using Liam ERD, please refer to the [official documentation](https://liambx.com/docs).
+
+## License
+
+Licensed under the [Apache License Version 2.0](LICENSE).
