@@ -1,3 +1,4 @@
-# Note: For this sample, use 'password' as the value
-dsn: mssql://sa:<password>@localhost:1433/blog_app
+# Sample configuration
+# Note: Set MSSQL_PASSWORD environment variable to 'password' for this sample project
+dsn: mssql://sa:${MSSQL_PASSWORD}@localhost:1433/blog_app
 docPath: samples/mssql-with-tbls/docs
