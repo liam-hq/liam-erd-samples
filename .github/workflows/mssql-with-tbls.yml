@@ -1,0 +1,64 @@
+name: Microsoft SQL Server with tbls
+
+on:
+  pull_request:
+    paths:
+      - "samples/mssql-with-tbls/**"
+      - ".github/workflows/mssql-with-tbls.yml"
+  schedule:
+    # Schedule: Runs at 9:00 AM and 1:00 PM Asia/Tokyo time (UTC+9) on weekdays (Monday to Friday).
+    - cron: "0 0,4 * * mon-fri"
+
+jobs:
+  document:
+    runs-on: ubuntu-latest
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: YourStrong@Passw0rd
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q 'SELECT 1'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup tbls
+        uses: k1low/setup-tbls@v1
+
+      - name: Install sqlcmd
+        run: |
+          curl https://packages.microsoft.com/keys/microsoft.asc | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc
+          curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18
+          echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+          source ~/.bashrc
+
+      - name: Migrate schema
+        run: |
+          /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -i samples/mssql-with-tbls/schema.sql
+
+      - name: Generate tbls document
+        run: |
+          tbls doc --force --config samples/mssql-with-tbls/.tbls.yml
+
+      - name: Generate ER Diagrams
+        run: npx @liam-hq/cli erd build --format tbls --input samples/mssql-with-tbls/docs/schema.json
+
+      # NOTE: For deploy, comment-in.
+      # see also other .github/workflows/ files.
+      # - name: Deploy ERD to Cloudflare Pages
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_SAMPLE_PRISMA }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_SAMPLE_PRISMA }}
+      #     workingDirectory: samples/prisma-with-cloudflare-pages
+      #     command: pages deploy ./dist --project-name=prisma-with-cloudflare-pages
+      #     gitHubToken: ${{ secrets.GITHUB_TOKEN }}
