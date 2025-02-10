@@ -1,4 +1,2 @@
-# Sample configuration
-# Note: Set MSSQL_PASSWORD environment variable to 'password' for this sample project
-dsn: mssql://sa:${MSSQL_PASSWORD}@localhost:1433/blog_app
+dsn: mssql://sa:YourStrong@Passw0rd@localhost:1433/blog_app
 docPath: samples/mssql-with-tbls/docs
