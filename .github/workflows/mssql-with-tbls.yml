@@ -20,7 +20,6 @@ jobs:
         image: mcr.microsoft.com/mssql/server:2022-latest
         env:
           ACCEPT_EULA: Y
-          # Note: Set SA_PASSWORD to 'password' for this sample project
           SA_PASSWORD: ${{ env.MSSQL_PASSWORD }}
         ports:
           - 1433:1433
