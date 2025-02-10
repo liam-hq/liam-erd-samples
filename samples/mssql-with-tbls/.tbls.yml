@@ -1,2 +1,2 @@
-dsn: mssql://sa:YourStrong@Passw0rd@localhost:1433/blog_app
+dsn: mssql://sa:YourStrongPassword@localhost:1433/blog_app
 docPath: samples/mssql-with-tbls/docs
