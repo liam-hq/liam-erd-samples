@@ -1,0 +1,3 @@
+dsn: postgres://postgres:postgres@localhost:5432/django_sample
+docPath: samples/django-with-postgres/docs
+name: Django with PostgreSQL
