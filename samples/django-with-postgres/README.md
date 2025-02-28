@@ -29,19 +29,12 @@ Django ORM defines database schemas through model classes in Python. These model
    pip install django psycopg2-binary
    ```
 
-2. Configure PostgreSQL connection in `.tbls.yml`
-
-3. Run the extraction script:
+2. Run the extraction script:
    ```bash
    ./extract_schema.sh
    ```
 
-4. Generate documentation:
-   ```bash
-   tbls doc --force --config .tbls.yml
-   ```
-
-5. Generate ER diagrams:
+3. Generate ER diagrams:
    ```bash
    npx @liam-hq/cli erd build --format postgres --input schema.sql
    ```
