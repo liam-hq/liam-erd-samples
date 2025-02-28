@@ -18,7 +18,6 @@ Django ORM defines database schemas through model classes in Python. These model
 - PostgreSQL
 - Django
 - psycopg2-binary
-- tbls
 
 ## Usage
 

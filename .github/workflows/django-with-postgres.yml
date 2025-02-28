@@ -40,9 +40,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install django psycopg2-binary
 
-      - name: Setup tbls
-        uses: k1low/setup-tbls@v1
-
       - name: Apply Django migrations
         run: |
           cd samples/django-with-postgres/django_sample
@@ -54,10 +51,6 @@ jobs:
         run: |
           cd samples/django-with-postgres
           pg_dump -h localhost -p 5432 -U postgres -d django_sample --schema-only > schema.sql
-
-      - name: Generate tbls document
-        run: |
-          tbls doc --force --config samples/django-with-postgres/.tbls.yml
 
       - name: Generate ER Diagrams
         run: npx @liam-hq/cli erd build --format postgres --input samples/django-with-postgres/schema.sql

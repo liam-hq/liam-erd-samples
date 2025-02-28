@@ -1,3 +1,0 @@
-dsn: postgres://postgres:postgres@localhost:5432/django_sample?sslmode=disable
-docPath: samples/django-with-postgres/docs
-name: Django with PostgreSQL
