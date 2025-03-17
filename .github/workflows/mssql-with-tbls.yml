@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup tbls
-        uses: k1low/setup-tbls@v1
+        uses: k1low/setup-tbls@bc3b2e35bfff08e10d3d79dff8d9b5ce28b766b7 # v1.3.0
 
       - name: Install sqlcmd
         run: |

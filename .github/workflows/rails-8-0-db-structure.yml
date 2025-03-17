@@ -31,7 +31,7 @@ jobs:
 
       # NOTE: for `bin/rails` command.
       - name: Setup Ruby for samples/rails-8-0-db-structure
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@922ebc4c5262cd14e07bb0e1db020984b6c064fe # v1.226.0
         with:
           bundler-cache: true
           working-directory: samples/rails-8-0-db-structure
