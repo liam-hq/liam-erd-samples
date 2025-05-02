@@ -1,0 +1,98 @@
+overrides: {}
+requests:
+  - id: "REQ-2024-01-17-001"
+    description: "Add user preferences table for storing user-specific settings"
+    status: "open"
+    tables:
+      add:
+        user_preferences:
+          definition:
+            name: "user_preferences"
+            comment: "Stores user-specific settings and preferences"
+            columns:
+              id:
+                name: "id"
+                type: "text"
+                default: "cuid(1)"
+                check: null
+                primary: true
+                unique: true
+                notNull: true
+                comment: "Primary key"
+              user_id:
+                name: "user_id"
+                type: "text"
+                default: null
+                check: null
+                primary: false
+                unique: false
+                notNull: true
+                comment: "Foreign key to users table"
+              theme:
+                name: "theme"
+                type: "text"
+                default: "'light'"
+                check: null
+                primary: false
+                unique: false
+                notNull: true
+                comment: "UI theme preference (light/dark)"
+              notification_enabled:
+                name: "notification_enabled"
+                type: "boolean"
+                default: true
+                check: null
+                primary: false
+                unique: false
+                notNull: true
+                comment: "Whether notifications are enabled for the user"
+              created_at:
+                name: "created_at"
+                type: "timestamp(3)"
+                default: "now()"
+                check: null
+                primary: false
+                unique: false
+                notNull: true
+                comment: "Record creation timestamp"
+              updated_at:
+                name: "updated_at"
+                type: "timestamp(3)"
+                default: "now()"
+                check: null
+                primary: false
+                unique: false
+                notNull: true
+                comment: "Record last update timestamp"
+            indexes:
+              user_preferences_user_id_key:
+                name: "user_preferences_user_id_key"
+                type: "btree"
+                columns: ["user_id"]
+                unique: true
+            constraints:
+              user_preferences_user_fk:
+                type: "FOREIGN KEY"
+                name: "user_preferences_user_fk"
+                columnName: "user_id"
+                targetTableName: "User"
+                targetColumnName: "id"
+                updateConstraint: "CASCADE"
+                deleteConstraint: "CASCADE"
+    relationships:
+      add:
+        user_preferences_user_rel:
+          definition:
+            name: "user_preferences_user_rel"
+            primaryTableName: "User"
+            primaryColumnName: "id"
+            foreignTableName: "user_preferences"
+            foreignColumnName: "user_id"
+            cardinality: "ONE_TO_ONE"
+            updateConstraint: "CASCADE"
+            deleteConstraint: "CASCADE"
+    createdBy: "hoshinotsuyoshi"
+    createdAt: "2024-01-17T00:00:00Z"
+    refs:
+      issue: "1"
+      commit: null
