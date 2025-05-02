@@ -28,15 +28,6 @@ requests:
                 unique: false
                 notNull: true
                 comment: "Foreign key to users table"
-              theme:
-                name: "theme"
-                type: "text"
-                default: "'light'"
-                check: null
-                primary: false
-                unique: false
-                notNull: true
-                comment: "UI theme preference (light/dark)"
               notification_enabled:
                 name: "notification_enabled"
                 type: "boolean"
@@ -95,4 +86,105 @@ requests:
     createdAt: "2024-01-17T00:00:00Z"
     refs:
       issue: "1"
+      commit: null
+  - id: "REQ-2024-01-17-002"
+    description: "Add user activity logs table for tracking user actions"
+    status: "open"
+    tables:
+      add:
+        user_activity_logs:
+          definition:
+            name: "user_activity_logs"
+            comment: "Stores user activity history and audit logs"
+            columns:
+              id:
+                name: "id"
+                type: "text"
+                default: "cuid(1)"
+                check: null
+                primary: true
+                unique: true
+                notNull: true
+                comment: "Primary key"
+              user_id:
+                name: "user_id"
+                type: "text"
+                default: null
+                check: null
+                primary: false
+                unique: false
+                notNull: true
+                comment: "Foreign key to users table"
+              action_type:
+                name: "action_type"
+                type: "text"
+                default: null
+                check: null
+                primary: false
+                unique: false
+                notNull: true
+                comment: "Type of action performed (e.g., login, update_profile, etc.)"
+              action_details:
+                name: "action_details"
+                type: "jsonb"
+                default: null
+                check: null
+                primary: false
+                unique: false
+                notNull: false
+                comment: "Additional details about the action in JSON format"
+              ip_address:
+                name: "ip_address"
+                type: "text"
+                default: null
+                check: null
+                primary: false
+                unique: false
+                notNull: false
+                comment: "IP address of the user when action was performed"
+              created_at:
+                name: "created_at"
+                type: "timestamp(3)"
+                default: "now()"
+                check: null
+                primary: false
+                unique: false
+                notNull: true
+                comment: "Record creation timestamp"
+            indexes:
+              user_activity_logs_user_id_idx:
+                name: "user_activity_logs_user_id_idx"
+                type: "btree"
+                columns: ["user_id"]
+                unique: false
+              user_activity_logs_created_at_idx:
+                name: "user_activity_logs_created_at_idx"
+                type: "btree"
+                columns: ["created_at"]
+                unique: false
+            constraints:
+              user_activity_logs_user_fk:
+                type: "FOREIGN KEY"
+                name: "user_activity_logs_user_fk"
+                columnName: "user_id"
+                targetTableName: "User"
+                targetColumnName: "id"
+                updateConstraint: "CASCADE"
+                deleteConstraint: "CASCADE"
+    relationships:
+      add:
+        user_activity_logs_user_rel:
+          definition:
+            name: "user_activity_logs_user_rel"
+            primaryTableName: "User"
+            primaryColumnName: "id"
+            foreignTableName: "user_activity_logs"
+            foreignColumnName: "user_id"
+            cardinality: "ONE_TO_MANY"
+            updateConstraint: "CASCADE"
+            deleteConstraint: "CASCADE"
+    createdBy: "hoshinotsuyoshi"
+    createdAt: "2024-01-17T00:00:00Z"
+    refs:
+      issue: "2"
       commit: null
