@@ -69,5 +69,5 @@ requests:
     createdBy: "hoshinotsuyoshi"
     createdAt: "2024-06-01T00:00:00Z"
     refs:
-      issue: null
+      issue: "1"
       commit: null
