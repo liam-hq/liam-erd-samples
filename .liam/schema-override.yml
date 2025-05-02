@@ -1,2 +1,73 @@
 overrides: {}
-requests: []
+requests:
+  - id: "REQ-2024-06-01-001"
+    description: "プロジェクトごとの監査イベントを記録するProjectAuditEventテーブルを追加する"
+    status: "open"
+    tables:
+      add:
+        ProjectAuditEvent:
+          definition:
+            name: "ProjectAuditEvent"
+            comment: "プロジェクト単位の監査イベントを記録するテーブル。セキュリティや運用監査に利用。"
+            columns:
+              id:
+                name: "id"
+                type: "text"
+                default: "cuid(1)"
+                check: null
+                primary: true
+                unique: true
+                notNull: true
+                comment: "主キー"
+              project_id:
+                name: "project_id"
+                type: "text"
+                default: null
+                check: null
+                primary: false
+                unique: false
+                notNull: true
+                comment: "Projectテーブルへの外部キー"
+              event_type:
+                name: "event_type"
+                type: "text"
+                default: null
+                check: null
+                primary: false
+                unique: false
+                notNull: true
+                comment: "イベント種別（例: created, updated, deleted, permission_changed など）"
+              actor_user_id:
+                name: "actor_user_id"
+                type: "text"
+                default: null
+                check: null
+                primary: false
+                unique: false
+                notNull: false
+                comment: "イベントを発生させたユーザーID（匿名操作の場合はnull）"
+              detail:
+                name: "detail"
+                type: "jsonb"
+                default: null
+                check: null
+                primary: false
+                unique: false
+                notNull: false
+                comment: "イベントの詳細情報（JSON形式）"
+              created_at:
+                name: "created_at"
+                type: "timestamp(3)"
+                default: "now()"
+                check: null
+                primary: false
+                unique: false
+                notNull: true
+                comment: "イベント発生日時"
+            indexes: {}
+            constraints: {}
+    createdBy: "hoshinotsuyoshi"
+    createdAt: "2024-06-01T00:00:00Z"
+    refs:
+      issue: null
+      commit: null
