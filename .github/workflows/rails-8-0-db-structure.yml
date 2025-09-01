@@ -27,7 +27,7 @@ jobs:
           POSTGRES_PASSWORD: password
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # NOTE: for `bin/rails` command.
       - name: Setup Ruby for samples/rails-8-0-db-structure

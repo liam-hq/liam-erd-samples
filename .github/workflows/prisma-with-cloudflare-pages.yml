@@ -16,7 +16,7 @@ jobs:
       deployments: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Generate ER Diagrams
         run: npx @liam-hq/cli erd build --input prisma/schema.prisma --format prisma
       - name: Deploy ERD to Cloudflare Pages
