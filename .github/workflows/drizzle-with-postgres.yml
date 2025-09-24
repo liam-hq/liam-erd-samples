@@ -1,0 +1,68 @@
+name: Drizzle with PostgreSQL
+
+on:
+  pull_request:
+    paths:
+      - "samples/drizzle-with-postgres/**"
+      - ".github/workflows/drizzle-with-postgres.yml"
+  schedule:
+    # Schedule: Runs at 9:00 AM and 1:00 PM Asia/Tokyo time (UTC+9) on weekdays (Monday to Friday).
+    - cron: "0 0,4 * * mon-fri"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: drizzle_sample
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: samples/drizzle-with-postgres
+        run: npm ci
+
+      - name: Generate SQL migrations
+        working-directory: samples/drizzle-with-postgres
+        run: npm run db:generate
+
+      - name: Push schema to database
+        working-directory: samples/drizzle-with-postgres
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_NAME: drizzle_sample
+        run: npm run db:push
+
+      - name: Generate ER Diagrams
+        working-directory: samples/drizzle-with-postgres
+        run: npx @liam-hq/cli erd build --format drizzle --input ./schema.ts
+
+      # NOTE: For deploy, comment-in.
+      # see also other .github/workflows/ files.
+      # - name: Deploy ERD to Cloudflare Pages
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     workingDirectory: samples/drizzle-with-postgres
+      #     command: pages deploy ./dist --project-name=drizzle-with-postgres
+      #     gitHubToken: ${{ secrets.GITHUB_TOKEN }}
