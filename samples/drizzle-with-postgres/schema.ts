@@ -52,19 +52,19 @@ export const users = pgTable('users', {
   tags: text('tags').array(),
   metadata: json('metadata'),
 }, (table) => ({
-  // 複合インデックス
+  // Composite index
   fullNameIdx: index('users_full_name_idx').on(table.firstName, table.lastName),
-  // 部分インデックス（条件付き）
+  // Partial index (with condition)
   activeUsersEmailIdx: index('users_active_email_idx')
     .on(table.email)
     .where(sql`is_active = true`),
-  // 配列フィールドのインデックス
+  // Array field index
   tagsIdx: index('users_tags_idx').on(table.tags),
-  // ユニークインデックス
+  // Unique index
   verifiedEmailIdx: uniqueIndex('users_verified_email_unique_idx')
     .on(table.email)
     .where(sql`is_email_verified = true`),
-  // CHECK制約
+  // CHECK constraints
   ageCheck: check('users_age_check', sql`age >= 0 AND age <= 150`),
   usernameCheck: check('users_username_check', sql`length(username) >= 3`),
 }))
@@ -131,7 +131,7 @@ export const products = pgTable('products', {
     .where(sql`is_featured = true AND is_active = true`),
   // Price range index
   priceIdx: index('products_price_idx').on(table.price),
-  // Full text searchは別途実装が必要
+  // Full text search requires separate implementation
   // Low stock index
   lowStockIdx: index('products_low_stock_idx')
     .on(table.stockQuantity)

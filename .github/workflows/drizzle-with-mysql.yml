@@ -1,0 +1,68 @@
+name: Drizzle with MySQL
+
+on:
+  pull_request:
+    paths:
+      - "samples/drizzle-with-mysql/**"
+      - ".github/workflows/drizzle-with-mysql.yml"
+  schedule:
+    # Schedule: Runs at 9:00 AM and 1:00 PM Asia/Tokyo time (UTC+9) on weekdays (Monday to Friday).
+    - cron: "0 0,4 * * mon-fri"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_DATABASE: drizzle_sample
+          MYSQL_ROOT_PASSWORD: mysql
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: samples/drizzle-with-mysql
+        run: npm ci
+
+      - name: Generate SQL migrations
+        working-directory: samples/drizzle-with-mysql
+        run: npm run db:generate
+
+      - name: Push schema to database
+        working-directory: samples/drizzle-with-mysql
+        env:
+          DB_HOST: localhost
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: mysql
+          DB_NAME: drizzle_sample
+        run: npm run db:push
+
+      - name: Generate ER Diagrams
+        working-directory: samples/drizzle-with-mysql
+        run: npx @liam-hq/cli erd build --format drizzle --input ./schema.ts
+
+      # NOTE: For deploy, comment-in.
+      # see also other .github/workflows/ files.
+      # - name: Deploy ERD to Cloudflare Pages
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     workingDirectory: samples/drizzle-with-mysql
+      #     command: pages deploy ./dist --project-name=drizzle-with-mysql
+      #     gitHubToken: ${{ secrets.GITHUB_TOKEN }}

@@ -30,7 +30,7 @@ export const paymentMethodEnum = mysqlEnum('payment_method', ['credit_card', 'pa
 // ========================================
 
 export const users = mysqlTable('users', {
-  id: serial('id').primaryKey(),
+  id: int('id').autoincrement().primaryKey(),
   uuid: varchar('uuid', { length: 36 }).notNull().unique().$defaultFn(() => crypto.randomUUID()),
   email: varchar('email', { length: 255 }).notNull().unique(),
   username: varchar('username', { length: 50 }).notNull().unique(),
@@ -50,21 +50,20 @@ export const users = mysqlTable('users', {
   tags: json('tags').$type<string[]>(),
   metadata: json('metadata'),
 }, (table) => ({
-  // 複合インデックス
+  // Composite index
   fullNameIdx: index('users_full_name_idx').on(table.firstName, table.lastName),
-  // 部分インデックス（MySQLでは通常のインデックスとして実装）
+  // Partial index (implemented as regular index in MySQL)
   activeUsersEmailIdx: index('users_active_email_idx').on(table.email),
-  // JSONフィールドのインデックス（MySQLでは仮想列経由が推奨）
-  tagsIdx: index('users_tags_idx').on(table.tags),
-  // ユニークインデックス
+  // JSON field index (not supported directly in MySQL, requires virtual columns)
+  // Unique index
   verifiedEmailIdx: uniqueIndex('users_verified_email_unique_idx').on(table.email),
-  // CHECK制約
+  // CHECK constraints
   ageCheck: check('users_age_check', sql`age >= 0 AND age <= 150`),
   usernameCheck: check('users_username_check', sql`CHAR_LENGTH(username) >= 3`),
 }))
 
 export const categories = mysqlTable('categories', {
-  id: serial('id').primaryKey(),
+  id: int('id').autoincrement().primaryKey(),
   name: varchar('name', { length: 100 }).notNull().unique(),
   slug: varchar('slug', { length: 100 }).notNull().unique(),
   description: text('description'),
@@ -85,7 +84,7 @@ export const categories = mysqlTable('categories', {
 }))
 
 export const products = mysqlTable('products', {
-  id: serial('id').primaryKey(),
+  id: int('id').autoincrement().primaryKey(),
   sku: varchar('sku', { length: 50 }).notNull().unique(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
@@ -138,7 +137,7 @@ export const products = mysqlTable('products', {
 }))
 
 export const brands = mysqlTable('brands', {
-  id: serial('id').primaryKey(),
+  id: int('id').autoincrement().primaryKey(),
   name: varchar('name', { length: 100 }).notNull().unique(),
   slug: varchar('slug', { length: 100 }).notNull().unique(),
   description: text('description'),
@@ -156,14 +155,14 @@ export const brands = mysqlTable('brands', {
   // Country index
   countryIdx: index('brands_country_idx').on(table.countryCode),
   // CHECK constraints
-  foundedYearCheck: check('brands_founded_year_check', 
-    sql`founded_year >= 1800 AND founded_year <= YEAR(NOW())`),
+  foundedYearCheck: check('brands_founded_year_check',
+    sql`founded_year >= 1800 AND founded_year <= 2025`),
   countryCodeCheck: check('brands_country_code_check', 
     sql`country_code REGEXP '^[A-Z]{2}$'`),
 }))
 
 export const orders = mysqlTable('orders', {
-  id: serial('id').primaryKey(),
+  id: int('id').autoincrement().primaryKey(),
   orderNumber: varchar('order_number', { length: 50 }).notNull().unique(),
   userId: int('user_id').notNull().references(() => users.id, {
     onDelete: 'restrict',
@@ -214,7 +213,7 @@ export const orders = mysqlTable('orders', {
 }))
 
 export const orderItems = mysqlTable('order_items', {
-  id: serial('id').primaryKey(),
+  id: int('id').autoincrement().primaryKey(),
   orderId: int('order_id').notNull().references(() => orders.id, {
     onDelete: 'cascade',
     onUpdate: 'cascade'
@@ -243,7 +242,7 @@ export const orderItems = mysqlTable('order_items', {
 }))
 
 export const reviews = mysqlTable('reviews', {
-  id: serial('id').primaryKey(),
+  id: int('id').autoincrement().primaryKey(),
   productId: int('product_id').notNull().references(() => products.id, {
     onDelete: 'cascade',
     onUpdate: 'cascade'
@@ -308,7 +307,7 @@ export const productTags = mysqlTable('product_tags', {
 }))
 
 export const tags = mysqlTable('tags', {
-  id: serial('id').primaryKey(),
+  id: int('id').autoincrement().primaryKey(),
   name: varchar('name', { length: 50 }).notNull().unique(),
   slug: varchar('slug', { length: 50 }).notNull().unique(),
   description: text('description'),

@@ -1,6 +1,6 @@
 # Drizzle ORM MySQL Sample
 
-This sample demonstrates a comprehensive e-commerce database schema using Drizzle ORM with MySQL.
+This project is a development example using Drizzle ORM with MySQL, demonstrating how to define comprehensive database schemas that can be visualized as ER diagrams using Liam.
 
 ## Setup
 
@@ -48,3 +48,12 @@ npm run db:studio
 - Notification system
 - Proper foreign key relationships
 - Enum types for order and notification status
+
+## Workflow
+
+The documentation process is automated using a GitHub Actions workflow defined in [.github/workflows/drizzle-with-mysql.yml](/.github/workflows/drizzle-with-mysql.yml).
+
+
+## Documentation
+
+For more detailed information, please refer to the [Liam documentation's Drizzle ORM support page](https://liambx.com/docs/parser/supported-formats/drizzle).
