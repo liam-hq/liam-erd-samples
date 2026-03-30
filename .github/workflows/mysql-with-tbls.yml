@@ -27,7 +27,7 @@ jobs:
           --health-retries=3
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - name: Setup tbls
         uses: k1low/setup-tbls@f25e3d013a596865b2db90dac7ee19e9f15b5780 # v1.4.0
@@ -46,7 +46,7 @@ jobs:
       # NOTE: For deploy, comment-in.
       # see also other .github/workflows/ files.
       # - name: Deploy ERD to Cloudflare Pages
-      #   uses: cloudflare/wrangler-action@v3
+      #   uses: cloudflare/wrangler-action@da0e0dfe58b7a431659754fdf3f186c529afbe65 # v3
       #   with:
       #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_SAMPLE_PRISMA }}
       #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_SAMPLE_PRISMA }}
