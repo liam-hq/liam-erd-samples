@@ -49,10 +49,6 @@ npm run db:studio
 - Proper foreign key relationships
 - Enum types for order and notification status
 
-## Workflow
-
-The documentation process is automated using a GitHub Actions workflow defined in [.github/workflows/drizzle-with-postgres.yml](/.github/workflows/drizzle-with-postgres.yml).
-
 ## Documentation
 
 For more detailed information, please refer to the [Liam documentation's Drizzle ORM support page](https://liambx.com/docs/parser/supported-formats/drizzle).
